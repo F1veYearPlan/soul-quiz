@@ -1,8 +1,5 @@
 /* Soul Affinity Quiz — app
- * Set LEDGER_ENDPOINT to your Google Apps Script web-app URL to record
- * results to a sheet. Leave it "" and the page still works; it just won't log.
- */
-const LEDGER_ENDPOINT = "https://script.google.com/macros/s/AKfycbwGxYj-jPe6bQakxg-BPLTVuHtF5WXqrwfXBY8dLMCibG2MHsXK389t6D2qeP1esBgF/exec";
+*/
 const STORAGE_KEY = "soul-quiz-run-v1";
 
 const $ = s => document.querySelector(s);
@@ -224,8 +221,6 @@ function result() {
   $("#r-name").textContent = soul.name;
   $("#r-means").textContent = soul.means;
   $("#r-hook").textContent = soul.hook;
-  $("#record-status").textContent = LEDGER_ENDPOINT ? "" : "The ledger isn't open yet.";
-  $("#btn-record").disabled = !LEDGER_ENDPOINT;
 
   const bars = $("#r-bars"); bars.innerHTML = "";
   const scale = Math.max(4, ...AXES.map(a => r.axes[a])); // bars are relative to the tallest axis
@@ -251,30 +246,6 @@ function result() {
   (async () => { await typeInto($("#r-resonance"), RESONANCE[r.soul], 18); await typeInto($("#r-reading"), soul.reading, 18); })();
 }
 function axisColor(a) { return { F: "#e0713a", W: "#3f8fd2", E: "#a07a4a", A: "#9fc4d8", R: "#f0d878", V: "#6b4d8f" }[a]; }
-
-$("#btn-record").addEventListener("click", async () => {
-  if (!LEDGER_ENDPOINT || !lastResult) return;
-  const btn = $("#btn-record"); btn.disabled = true;
-  $("#record-status").textContent = "Writing...";
-  const { r, runId, answers } = lastResult;
-  const payload = {
-    ts: new Date().toISOString(), runId,
-    handle: $("#handle").value.trim().slice(0, 64),
-    soul: r.soul, magnitude: +r.magnitude.toFixed(3),
-    axes: Object.fromEntries(AXES.map(a => [a, +r.axes[a].toFixed(2)])),
-    blood: { b: +r.blood.b.toFixed(3), d: +r.blood.d.toFixed(3) },
-    baseline: answers.baseline, picks: answers.picks,
-    secondsTaken: Math.round((Date.now() - run.started) / 1000),
-    ua: navigator.userAgent.slice(0, 120),
-  };
-  try {
-    await fetch(LEDGER_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
-    $("#record-status").textContent = "Recorded. The Registrar has your name.";
-  } catch (e) {
-    $("#record-status").textContent = "The ledger didn't answer. Try again in a moment.";
-    btn.disabled = false;
-  }
-});
 
 $("#btn-copy").addEventListener("click", async () => {
   if (!lastResult) return;
