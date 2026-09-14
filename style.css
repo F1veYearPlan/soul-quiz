@@ -136,7 +136,7 @@ input[type="text"]:focus { outline: none; border-color: var(--gold); }
 .result-head { display: flex; gap: 22px; align-items: center; }
 .glyph { font-size: 64px; line-height: 1; width: 90px; height: 90px; display: grid; place-items: center; border: 3px solid var(--gold-dim); background: var(--navy-deep); }
 .eyebrow { margin: 0; color: var(--muted); font-size: 20px; }
-.result-head h2 { font-family: var(--font-ui); font-size: 34px; color: var(--gold); margin: 2px 0; font-weight: 600; }
+.result-head h2 { font-family: var(--font-ui); font-size: 34px; color: var(--gold); margin: 0; font-weight: 600; }
 .element { margin: 0; color: var(--gold-soft); }
 .means { margin: 0 0 12px; }
 .hook { margin: 0; color: var(--muted); }

@@ -107,6 +107,24 @@ const SOULS = {
   },
 };
 
+/* First line of the result screen, per soul. */
+const RESONANCE = {
+  flame: "Your soul resonates with the element of Fire.",
+  tide: "Your soul resonates with the element of Water.",
+  stone: "Your soul resonates with the element of Earth.",
+  wind: "Your soul resonates with the element of Air.",
+  mist: "Your soul resonates with the elements of Fire and Water.",
+  forge: "Your soul resonates with the elements of Fire and Earth.",
+  ash: "Your soul resonates with the elements of Fire and Air.",
+  life: "Your soul resonates with the elements of Water and Earth.",
+  storm: "Your soul resonates with the elements of Water and Air.",
+  dust: "Your soul resonates with the elements of Earth and Air.",
+  omni: "Your soul resonates with all four of the primal elements.",
+  dawn: "Your soul resonates with Radiance.",
+  dusk: "Your soul resonates with the Void.",
+  open: "Your soul resonates with nothing we have a name for.",
+};
+
 const AXIS_INFO = {
   F: { name: "Fire", short: "Drive", desc: "Initiative. Starting. Going first." },
   W: { name: "Water", short: "Feeling", desc: "Empathy. Yielding. Enduring." },
@@ -117,5 +135,5 @@ const AXIS_INFO = {
 };
 
 if (typeof module !== "undefined") {
-  module.exports = { SOULS, AXIS_INFO };
+  module.exports = { SOULS, AXIS_INFO, RESONANCE };
 }

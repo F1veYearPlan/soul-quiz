@@ -12,9 +12,8 @@ Static site. No build step. Open `index.html` or host the folder anywhere.
 - `Code.gs` — the Google Sheets receiver.
 - `simulate.js` — `node simulate.js` checks bank balance, reachability of every soul, and a simulated population.
 
-## Codes
-- Reading code (`TIDE-S8QF`): hash of the answers + soul. Proves a screenshot matches an actual run. Two people with the same answers get the same code, which is fine; it's for verification, not identity.
-- Return code (`R-MKSV-64VN`): identifies the run. A retester enters it on the intro screen and it is logged as `previousReturnCode`, so you can pair the two rows.
+## Ledger rows
+Each recorded run logs a `runId` (never shown to the user), the handle they typed, the soul, all six axis scores, magnitude, blood, raw answers, and time taken. Retests are matched by handle.
 
 ## Tuning blood weight
 `CONFIG.blood` in `scoring.js` starts at all zeros: nobody carries a nudge, everyone gets their true result. Once you have rows in the sheet:

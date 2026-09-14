@@ -121,5 +121,22 @@ const Ambient = (() => {
     setTimeout(() => { if (!running && ctx) { ctx.close(); ctx = null; } }, 1500);
   }
 
-  return { start, stop, isRunning: () => running };
+  /* Short text blip, Undertale-style. Silent when sound is off. */
+  let blipCtx = null, lastBlip = 0;
+  function blip() {
+    if (!running) return;
+    const c = ctx || blipCtx || (blipCtx = new (window.AudioContext || window.webkitAudioContext)());
+    const now = c.currentTime;
+    if (now - lastBlip < 0.035) return;
+    lastBlip = now;
+    const o = c.createOscillator(); o.type = "square";
+    o.frequency.setValueAtTime(420 + Math.random() * 60, now);
+    o.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.045, now + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+    o.connect(g); g.connect(c.destination); o.start(now); o.stop(now + 0.07);
+  }
+
+  return { start, stop, blip, isRunning: () => running };
 })();

@@ -26,7 +26,7 @@ function newRun() {
     seed, seq, pos: 0,
     baseline: new Array(BASELINE.length).fill(null),
     picks: new Array(SCENARIOS.length + FEEL_FIRST.length).fill(null),
-    prevCode: "", started: Date.now(), phase: "intro",
+    started: Date.now(), phase: "intro",
   };
 }
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(run)); } catch (e) {} }
@@ -35,16 +35,17 @@ function clear() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) {} }
 
 /* ---------- typewriter ---------- */
 let typer = null;
-function typeInto(el, text, speed = 16) {
+function typeInto(el, text, speed = 16, cursorEl = el) {
   return new Promise(resolve => {
     if (typer) typer.skip();
-    el.textContent = ""; el.classList.add("typing");
+    el.textContent = ""; cursorEl.classList.add("typing");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let i = 0, done = false, timer;
-    const finish = () => { if (done) return; done = true; clearTimeout(timer); el.textContent = text; el.classList.remove("typing"); typer = null; resolve(); };
+    const finish = () => { if (done) return; done = true; clearTimeout(timer); el.textContent = text; cursorEl.classList.remove("typing"); typer = null; resolve(); };
     const tick = () => {
       if (done) return;
       i++; el.textContent = text.slice(0, i);
+      if (i % 2 === 0 && /\S/.test(text[i - 1])) Ambient.blip();
       if (i >= text.length) finish();
       else timer = setTimeout(tick, text[i - 1] === "." || text[i - 1] === "?" ? speed * 9 : text[i - 1] === "," ? speed * 4 : speed);
     };
@@ -62,8 +63,12 @@ function show(name) {
 }
 
 async function sayLines(el, lines) {
+  el.textContent = "";
   for (let k = 0; k < lines.length; k++) {
-    await typeInto(el, lines.slice(0, k + 1).join("\n"));
+    const span = document.createElement("span");
+    if (k > 0) el.appendChild(document.createTextNode("\n"));
+    el.appendChild(span);
+    await typeInto(span, lines[k], 16, el);
     if (k < lines.length - 1) await pause(650);
   }
 }
@@ -73,18 +78,12 @@ const pause = ms => new Promise(r => setTimeout(r, ms));
 async function intro() {
   run.phase = "intro"; save();
   show("intro");
-  $("#btn-begin").disabled = true;
   await sayLines($("#intro-text"), READER.intro);
-  $("#btn-begin").disabled = false;
   $("#btn-begin").focus();
 }
-
-$("#btn-begin").addEventListener("click", () => {
-  const code = $("#prev-code").value.trim().toUpperCase();
-  run.prevCode = /^R-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code) ? code : "";
-  Ambient.start(); setAudioButton(true);
-  interlude(1);
-});
+$("#btn-begin").addEventListener("click", () => { if (soundOn) Ambient.start(); interlude(1); });
+$("#btn-whatis").addEventListener("click", () => { sayLines($("#intro-text"), [READER.whatIs]); });
+$("#btn-howlong").addEventListener("click", () => { sayLines($("#intro-text"), [READER.howLong]); });
 
 /* ---------- interludes ---------- */
 let interludeNext = null;
@@ -92,10 +91,8 @@ async function interlude(part) {
   run.phase = "interlude" + part; save();
   const lines = part === 1 ? READER.partOne : part === 2 ? READER.partTwo : READER.partThree;
   show("interlude");
-  $("#btn-interlude").disabled = true;
   interludeNext = () => question();
   await sayLines($("#interlude-text"), lines);
-  $("#btn-interlude").disabled = false;
   $("#btn-interlude").focus();
 }
 $("#btn-interlude").addEventListener("click", () => { if (interludeNext) interludeNext(); });
@@ -219,20 +216,15 @@ function result() {
   const answers = { baseline: run.baseline.map(v => v ?? 0), picks: run.picks };
   const r = score(bank, answers, blood);
   const soul = SOULS[r.soul];
-  const readingCode = makeReadingCode(r.soul, answers);
-  const returnCode = makeReturnCode(run.seed);
-  lastResult = { r, soul, readingCode, returnCode, answers };
+  const runId = makeReturnCode(run.seed); // logged only, never shown
+  lastResult = { r, soul, runId, answers };
 
   show("result");
   $("#r-glyph").textContent = soul.glyph;
   $("#r-name").textContent = soul.name;
-  $("#r-element").textContent = soul.element;
   $("#r-means").textContent = soul.means;
   $("#r-hook").textContent = soul.hook;
-  $("#r-reading-code").textContent = readingCode;
-  $("#r-return-code").textContent = returnCode;
-  $("#r-note").textContent = READER.resultNote;
-  $("#record-status").textContent = LEDGER_ENDPOINT ? "" : "The ledger isn't open yet. Post your reading code in Discord instead.";
+  $("#record-status").textContent = LEDGER_ENDPOINT ? "" : "The ledger isn't open yet.";
   $("#btn-record").disabled = !LEDGER_ENDPOINT;
 
   const bars = $("#r-bars"); bars.innerHTML = "";
@@ -256,7 +248,7 @@ function result() {
       : " Hunger runs strong in you, but hunger alone doesn't hold a soul; yours settles on its primal pull.";
   }
 
-  typeInto($("#r-reading"), soul.reading, 18);
+  (async () => { await typeInto($("#r-resonance"), RESONANCE[r.soul], 18); await typeInto($("#r-reading"), soul.reading, 18); })();
 }
 function axisColor(a) { return { F: "#e0713a", W: "#3f8fd2", E: "#a07a4a", A: "#9fc4d8", R: "#f0d878", V: "#6b4d8f" }[a]; }
 
@@ -264,9 +256,9 @@ $("#btn-record").addEventListener("click", async () => {
   if (!LEDGER_ENDPOINT || !lastResult) return;
   const btn = $("#btn-record"); btn.disabled = true;
   $("#record-status").textContent = "Writing...";
-  const { r, readingCode, returnCode, answers } = lastResult;
+  const { r, runId, answers } = lastResult;
   const payload = {
-    ts: new Date().toISOString(), returnCode, readingCode, previousReturnCode: run.prevCode,
+    ts: new Date().toISOString(), runId,
     handle: $("#handle").value.trim().slice(0, 64),
     soul: r.soul, magnitude: +r.magnitude.toFixed(3),
     axes: Object.fromEntries(AXES.map(a => [a, +r.axes[a].toFixed(2)])),
@@ -277,20 +269,20 @@ $("#btn-record").addEventListener("click", async () => {
   };
   try {
     await fetch(LEDGER_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(payload) });
-    $("#record-status").textContent = "Recorded. Post your reading code in Discord and Connor will assign your role.";
+    $("#record-status").textContent = "Recorded. The Registrar has your name.";
   } catch (e) {
-    $("#record-status").textContent = "The ledger didn't answer. Post your reading code in Discord instead.";
+    $("#record-status").textContent = "The ledger didn't answer. Try again in a moment.";
     btn.disabled = false;
   }
 });
 
 $("#btn-copy").addEventListener("click", async () => {
   if (!lastResult) return;
-  const { r, soul, readingCode } = lastResult;
+  const { r, soul } = lastResult;
   const lines = [
-    `${soul.glyph} ${soul.name} (${soul.element})`,
+    RESONANCE[r.soul],
+    `${soul.glyph} ${soul.name}`,
     AXES.map(a => `${AXIS_INFO[a].name} ${Math.min(10, r.axes[a]).toFixed(1)}`).join(" · "),
-    `Reading code: ${readingCode}`,
     location.href.split("#")[0],
   ];
   try { await navigator.clipboard.writeText(lines.join("\n")); $("#btn-copy").textContent = "Copied"; setTimeout(() => $("#btn-copy").textContent = "Copy result", 1500); } catch (e) {}
@@ -299,9 +291,13 @@ $("#btn-copy").addEventListener("click", async () => {
 $("#btn-again").addEventListener("click", () => { clear(); run = newRun(); intro(); });
 $("#btn-restart").addEventListener("click", () => { if (run.pos === 0 || window.confirm("Start over? Your answers so far will be lost.")) { clear(); run = newRun(); intro(); } });
 
-/* ---------- audio button ---------- */
+/* ---------- audio ---------- */
+let soundOn = true; // default on; browsers only let it start after the first click or key
 function setAudioButton(on) { const b = $("#btn-audio"); b.setAttribute("aria-pressed", on ? "true" : "false"); b.textContent = on ? "♪ on" : "♪ off"; }
-$("#btn-audio").addEventListener("click", () => { if (Ambient.isRunning()) { Ambient.stop(); setAudioButton(false); } else { Ambient.start(); setAudioButton(true); } });
+$("#btn-audio").addEventListener("click", e => { e.stopPropagation(); soundOn = !soundOn; if (soundOn) Ambient.start(); else Ambient.stop(); setAudioButton(soundOn); });
+const firstGesture = () => { if (soundOn) Ambient.start(); };
+document.addEventListener("pointerdown", firstGesture, { once: true });
+document.addEventListener("keydown", firstGesture, { once: true });
 
 /* ---------- embers ---------- */
 (function embers() {

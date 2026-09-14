@@ -428,26 +428,23 @@ const FEEL_FIRST = [
 const READER = {
   title: "Soul Affinity Quiz",
   intro: [
-    "You've never had your resonance read?",
-    "That's like not knowing your blood type.",
-    "...",
-    "Fine. Sit. Give me your hand, and keep quiet while I look.",
+    "You don't know your Elemental Affinity? Give me your palm, I'll read it for you.",
   ],
+  whatIs: "Knowing your Elemental Affinity tells us the nature of your Soul, the element whose nature most aligns with your own.",
+  howLong: "Ten minutes, give or take. Less if you don't overthink it.",
   partOne: [
-    "First the surface. I'll say a thing about you. You tell me how true it is. Don't perform for me; I can tell.",
+    "First, I'll say something about you and you tell me how true it is, got it?",
   ],
   partTwo: [
-    "Good. Now we go under.",
-    "I'm going to put you places. Tell me what you do there. There's no right answer. There's only the one you'd give.",
+    "Good, I'm getting an idea of your true nature. Now you'll be presented with scenarios, to you they will feel very real. I want you to imagine how you would act in them.",
   ],
   partThree: [
-    "Last, the quick ones. Don't think. I'll know if you think.",
+    "Got it. Just a few more questions.",
   ],
   reading: [
     "There it is.",
   ],
-  resultNote: "Every soul leans toward one force; that's the Alignment you'll learn fastest. It doesn't make you stronger. It makes you you.",
-};
+}
 
 if (typeof module !== "undefined") {
   module.exports = { BASELINE, SCENARIOS, FEEL_FIRST, READER };

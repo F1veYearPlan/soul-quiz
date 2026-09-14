@@ -21,7 +21,7 @@
   <img class="crest" src="guild.png" alt="" width="72" height="72">
   <h1>Soul Affinity Quiz</h1>
   <div class="tools">
-    <button id="btn-audio" class="tool" type="button" aria-pressed="false" title="Music">♪ off</button>
+    <button id="btn-audio" class="tool" type="button" aria-pressed="true" title="Sound">♪ on</button>
     <button id="btn-restart" class="tool" type="button" title="Start over">↺</button>
   </div>
 </header>
@@ -33,15 +33,11 @@
     <div class="box dialog">
       <p class="say" id="intro-text"></p>
     </div>
-    <div class="box actions">
-      <button id="btn-begin" class="choice primary" type="button">Give your hand</button>
-      <details class="retest">
-        <summary>Been read before?</summary>
-        <label for="prev-code">Enter the return code from your last reading.</label>
-        <input id="prev-code" type="text" placeholder="R-XXXX-XXXX" autocomplete="off" spellcheck="false" maxlength="11">
-      </details>
+    <div class="box answers" id="intro-choices">
+      <button id="btn-begin" class="choice" type="button">Give your hand</button>
+      <button id="btn-whatis" class="choice" type="button">What's an Elemental Affinity?</button>
+      <button id="btn-howlong" class="choice" type="button">How long will this take?</button>
     </div>
-    <p class="hint">A reading takes about ten minutes. There are no right answers. Nothing here is graded.</p>
   </section>
 
   <!-- Interlude (Registrar speaks between parts) -->
@@ -76,13 +72,12 @@
 
   <!-- Result -->
   <section id="s-result" class="screen hidden">
+    <div class="box dialog">
+      <p class="say" id="r-resonance"></p>
+    </div>
     <div class="box result-head">
       <div class="glyph" id="r-glyph"></div>
-      <div>
-        <p class="eyebrow">Your soul resonates as</p>
-        <h2 id="r-name"></h2>
-        <p class="element" id="r-element"></p>
-      </div>
+      <h2 id="r-name"></h2>
     </div>
     <div class="box dialog">
       <p class="say" id="r-reading"></p>
@@ -96,10 +91,6 @@
       <div class="bars" id="r-bars"></div>
       <p class="magnitude" id="r-magnitude"></p>
     </div>
-    <div class="box codes">
-      <div class="code"><span class="label">Reading code</span><strong id="r-reading-code"></strong><span class="sub">Proves this result. Post it with your screenshot.</span></div>
-      <div class="code"><span class="label">Return code</span><strong id="r-return-code"></strong><span class="sub">Keep it. If you're read again later, enter it first.</span></div>
-    </div>
     <div class="box ledger" id="ledger">
       <label for="handle">Your name for the Guild ledger (Discord handle, optional)</label>
       <input id="handle" type="text" maxlength="64" autocomplete="off" placeholder="name">
@@ -110,7 +101,6 @@
       <button id="btn-copy" class="choice" type="button">Copy result</button>
       <button id="btn-again" class="choice" type="button">Be read again</button>
     </div>
-    <p class="hint" id="r-note"></p>
   </section>
 
 </main>
