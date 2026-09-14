@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soul Affinity Quiz</title>
+<meta name="description" content="Have your soul's resonance read by the Guild Registrar. Sixty-six questions. No right answers.">
+<meta property="og:title" content="Soul Affinity Quiz">
+<meta property="og:description" content="Have your soul's resonance read by the Guild Registrar. No right answers.">
+<meta property="og:image" content="guild.png">
+<link rel="icon" href="guild.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="embers" aria-hidden="true"></canvas>
+
+<header class="top">
+  <img class="crest" src="guild.png" alt="" width="72" height="72">
+  <h1>Soul Affinity Quiz</h1>
+  <div class="tools">
+    <button id="btn-audio" class="tool" type="button" aria-pressed="false" title="Music">♪ off</button>
+    <button id="btn-restart" class="tool" type="button" title="Start over">↺</button>
+  </div>
+</header>
+
+<main id="stage" class="stage" aria-live="polite">
+
+  <!-- Intro -->
+  <section id="s-intro" class="screen">
+    <div class="box dialog">
+      <p class="say" id="intro-text"></p>
+    </div>
+    <div class="box actions">
+      <button id="btn-begin" class="choice primary" type="button">Give your hand</button>
+      <details class="retest">
+        <summary>Been read before?</summary>
+        <label for="prev-code">Enter the return code from your last reading.</label>
+        <input id="prev-code" type="text" placeholder="R-XXXX-XXXX" autocomplete="off" spellcheck="false" maxlength="11">
+      </details>
+    </div>
+    <p class="hint">A reading takes about ten minutes. There are no right answers. Nothing here is graded.</p>
+  </section>
+
+  <!-- Interlude (Registrar speaks between parts) -->
+  <section id="s-interlude" class="screen hidden">
+    <div class="box dialog">
+      <p class="say" id="interlude-text"></p>
+    </div>
+    <div class="box actions">
+      <button id="btn-interlude" class="choice primary" type="button">Go on</button>
+    </div>
+  </section>
+
+  <!-- Question -->
+  <section id="s-question" class="screen hidden">
+    <div class="progress">
+      <span id="counter" class="counter">01 / 66</span>
+      <div class="bar"><div id="bar-fill" class="fill"></div></div>
+    </div>
+    <div class="box dialog">
+      <p class="say" id="q-text"></p>
+    </div>
+    <div class="box answers" id="answers"></div>
+    <p class="hint keys">↑ ↓ or ← → move · 1–6 jump · Z or Enter confirm · X back</p>
+  </section>
+
+  <!-- Reading in progress -->
+  <section id="s-reading" class="screen hidden">
+    <div class="box dialog">
+      <p class="say" id="reading-text"></p>
+    </div>
+  </section>
+
+  <!-- Result -->
+  <section id="s-result" class="screen hidden">
+    <div class="box result-head">
+      <div class="glyph" id="r-glyph"></div>
+      <div>
+        <p class="eyebrow">Your soul resonates as</p>
+        <h2 id="r-name"></h2>
+        <p class="element" id="r-element"></p>
+      </div>
+    </div>
+    <div class="box dialog">
+      <p class="say" id="r-reading"></p>
+    </div>
+    <div class="box">
+      <p class="means" id="r-means"></p>
+      <p class="hook" id="r-hook"></p>
+    </div>
+    <div class="box">
+      <p class="label">How your soul leans</p>
+      <div class="bars" id="r-bars"></div>
+      <p class="magnitude" id="r-magnitude"></p>
+    </div>
+    <div class="box codes">
+      <div class="code"><span class="label">Reading code</span><strong id="r-reading-code"></strong><span class="sub">Proves this result. Post it with your screenshot.</span></div>
+      <div class="code"><span class="label">Return code</span><strong id="r-return-code"></strong><span class="sub">Keep it. If you're read again later, enter it first.</span></div>
+    </div>
+    <div class="box ledger" id="ledger">
+      <label for="handle">Your name for the Guild ledger (Discord handle, optional)</label>
+      <input id="handle" type="text" maxlength="64" autocomplete="off" placeholder="name">
+      <button id="btn-record" class="choice primary" type="button">Record in the ledger</button>
+      <p class="sub" id="record-status"></p>
+    </div>
+    <div class="box actions row">
+      <button id="btn-copy" class="choice" type="button">Copy result</button>
+      <button id="btn-again" class="choice" type="button">Be read again</button>
+    </div>
+    <p class="hint" id="r-note"></p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>The Adventurers Guild · Vaeloria</span>
+</footer>
+
+<script src="questions.js"></script>
+<script src="scoring.js"></script>
+<script src="souls.js"></script>
+<script src="audio.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
