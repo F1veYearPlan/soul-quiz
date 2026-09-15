@@ -81,7 +81,7 @@ const SOULS = {
     name: "Soul of Dawn", element: "Radiant", glyph: "☀️",
     reading: "One conviction, nothing competing. You would rather be judged than be wrong, and you have been, and you held.",
     means: "Your soul is aligned to Radiant alone. Moral clarity: principled action, willingness to be judged, holding when everyone says you're wrong. Radiant magick will come to you faster than anything else, and nothing else will come easily. The cost is rigidity. Be careful who you break over it.",
-    hook: "Rare. Most who take this reading do not get it, and the Registrar will look at you for a while.",
+    hook: "Rare. Most who take this reading do not get it. I will be looking at you for a while.",
     color: "#f0d878",
   },
   dusk: {
@@ -100,7 +100,7 @@ const SOULS = {
   },
   open: {
     name: "Open Soul", element: "No pull", glyph: "📖",
-    reading: "Nothing pulls. The Registrar looks at your hand a second time. Then a third.",
+    reading: "Nothing pulls. I look at your hand a second time. Then a third.",
     means: "No force claims you. That was common once, among the first Nephilim, and it is nearly impossible now. Healing and Wild magick come naturally to an Open Soul, and an Open Soul can be shaped by what happens to it. That is a gift or a danger depending entirely on what happens next.",
     hook: "Nearly impossible. If you got this, someone in the Guild is going to want a word.",
     color: "#f2e8d5",

@@ -36,7 +36,10 @@ function typeInto(el, text, speed = 16, cursorEl = el) {
       i++; el.textContent = text.slice(0, i);
       if (/\S/.test(text[i - 1])) Ambient.blip();
       if (i >= text.length) t.skip();
-      else { const c = text[i - 1]; timer = setTimeout(tick, c === "." || c === "?" || c === "!" ? speed * 9 : c === "," || c === ";" ? speed * 4 : speed); }
+      else {
+        const c = text[i - 1], ellipsis = c === "." && (text[i] === "." || text[i - 2] === ".");
+        timer = setTimeout(tick, ellipsis ? speed * 14 : c === "." || c === "?" || c === "!" ? speed * 9 : c === "," || c === ";" ? speed * 4 : speed);
+      }
     };
     tick();
   });
@@ -44,18 +47,18 @@ function typeInto(el, text, speed = 16, cursorEl = el) {
 function skipTyping() { if (!typers.size) return false; [...typers].forEach(t => t.skip()); return true; }
 
 /* Append lines one after another into a container, keeping earlier lines. */
-async function sayLines(el, lines, speed = 16) {
+async function sayLines(el, lines, speed = 16, gap = 550) {
   for (const line of lines) {
     const p = document.createElement("p"); p.className = "line"; el.appendChild(p);
     await typeInto(p, line, speed, p);
     el.closest(".box")?.scrollTo({ top: 1e6, behavior: "smooth" });
-    await pause(550);
+    await pause(gap);
   }
 }
 /* A header, then every named line typing at the same time. */
 async function sayBlock(el, block) {
   const h = document.createElement("p"); h.className = "line"; el.appendChild(h);
-  await typeInto(h, block.header, 14, h);
+  await typeInto(h, block.header, 24, h);
   await pause(400);
   const jobs = block.lines.map(l => {
     const p = document.createElement("p"); p.className = "line force";
@@ -64,7 +67,7 @@ async function sayBlock(el, block) {
     name.style.color = FORCE_COLORS[short] || FORCE_COLORS[l.name] || "var(--gold)";
     const body = document.createElement("span");
     p.append(name, body); el.appendChild(p);
-    return typeInto(body, l.text, 22, p);
+    return typeInto(body, l.text, 30, p);
   });
   await Promise.all(jobs);
   el.closest(".box")?.scrollTo({ top: 1e6, behavior: "smooth" });
@@ -119,31 +122,42 @@ function talkClear() { talkText.innerHTML = ""; talkChoices.innerHTML = ""; acti
 
 async function intro() {
   run.phase = "intro"; save();
-  show("talk"); $("#talk-box").classList.add("tall"); talkClear();
-  await sayLines(talkText, READER.intro);
+  show("talk"); talkClear();
+  await sayLines(talkText, READER.intro, 38);
   const c = READER.introChoices;
-  renderChoices(talkChoices, [c.yes, c.nature], k => k === 0 ? interlude(1) : nature());
+  renderChoices(talkChoices, [c.nature, c.yes], k => k === 0 ? nature() : interlude(1));
 }
 async function nature() {
   talkClear();
-  await sayLines(talkText, READER.nature);
-  await sayBlock(talkText, READER.primal);
-  await sayBlock(talkText, READER.moral);
-  await sayLines(talkText, READER.natureEnd);
-  const c = READER.natureChoices;
-  renderChoices(talkChoices, [c.yes, c.other], k => k === 0 ? interlude(1) : other());
+  await sayLines(talkText, READER.nature, 30);
+  renderChoices(talkChoices, [READER.natureChoice], () => primal());
 }
-async function other() {
+async function primal() {
   talkClear();
-  await sayLines(talkText, READER.other);
+  await sayBlock(talkText, READER.primal);
+  renderChoices(talkChoices, [READER.primalChoice], () => moral());
+}
+async function moral() {
+  talkClear();
+  await sayBlock(talkText, READER.moral);
+  await sayLines(talkText, READER.moralEnd, 24);
+  const c = READER.moralChoices;
+  renderChoices(talkChoices, [c.other, c.yes], k => k === 0 ? meta() : interlude(1));
+}
+async function meta() {
+  talkClear();
   await sayBlock(talkText, READER.meta);
+  renderChoices(talkChoices, [READER.metaChoice], () => precreation());
+}
+async function precreation() {
+  talkClear();
   await sayBlock(talkText, READER.precreation);
-  await sayLines(talkText, READER.otherEnd);
-  renderChoices(talkChoices, [READER.natureChoices.yes], () => interlude(1));
+  await sayLines(talkText, READER.otherEnd, 24);
+  renderChoices(talkChoices, [READER.yes], () => interlude(1));
 }
 async function interlude(part) {
   run.phase = "interlude" + part; save();
-  show("talk"); $("#talk-box").classList.remove("tall"); talkClear();
+  show("talk"); talkClear();
   const lines = part === 1 ? READER.partOne : part === 2 ? READER.partTwo : READER.partThree;
   await sayLines(talkText, lines);
   renderChoices(talkChoices, ["Go on"], () => question());
@@ -213,7 +227,7 @@ function back() { if (run.pos === 0) return; run.pos--; save(); question(); }
 /* ---------- reading + result ---------- */
 async function reading() {
   run.phase = "reading"; save();
-  show("talk"); $("#talk-box").classList.remove("tall"); talkClear();
+  show("talk"); talkClear();
   await sayLines(talkText, ["I'm quiet for a while.", "I turn your hand over.", ...READER.reading]);
   await pause(700);
   result();
@@ -228,6 +242,7 @@ function result() {
   const soul = SOULS[r.soul];
   lastResult = { r, soul };
   show("result"); active = null;
+  $("#r-resonance").textContent = "";
   $("#r-glyph").textContent = soul.glyph;
   $("#r-name").textContent = soul.name;
   $("#r-means").textContent = soul.means;
@@ -244,7 +259,7 @@ function result() {
   const m = r.magnitude;
   $("#r-magnitude").textContent = "How hard you press: " + (m >= 0.8 ? "very hard. You don't do neutral." : m >= 0.6 ? "hard. You know what you think." : m >= 0.4 ? "evenly. You weigh things." : "lightly. You keep your options open.");
   const tallest = AXES.slice().sort((x, y) => r.axes[y] - r.axes[x])[0];
-  if ((tallest === "R" || tallest === "V") && r.soul !== "dawn" && r.soul !== "dusk") {
+  if ((tallest === "R" || tallest === "V") && !["dawn", "dusk", "open", "omni"].includes(r.soul)) {
     $("#r-magnitude").textContent += tallest === "R"
       ? " Conviction runs strong in you, but conviction alone doesn't hold a soul; yours settles on its primal pull."
       : " Hunger runs strong in you, but hunger alone doesn't hold a soul; yours settles on its primal pull.";
