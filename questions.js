@@ -433,11 +433,11 @@ const READER = {
   splash: "Hello...? Are you awake?",
   splashYes: "Yes",
   intro: [
-    "I can see you've been met with a terrible fate.",
-    "The world you are about to wake up in is much different from your own...",
-    "It's dangerous, and for much of it you will be alone. You will need to be strong.",
-    "I have nothing I can offer you but this humble warning, for I am only a Soul, just like you.",
-    "Ah... there may be one thing I can do... this world, Vaeloria, is full of Magick. If you'll allow me, I can peer into your soul and impart the knowledge of your nature upon you.",
+    "I can see that you've met with a terrible fate.",
+    "The world you are about to wake up in is different from your own...",
+    "I cannot tell you what awaits, but perhaps I can help you understand what you carry with you.",
+    "Vaeloria is a world full of Magick, and every soul has an affinity for one of the many forces of magick. This affinity means that type of Magick comes more readily to you than the rest.",
+    "If you\u2019ll allow me, I can peer into yours... and show you your nature.",
   ],
   introChoices: { nature: "What do you mean my \"nature\"?", yes: "Yes, please do." },
   nature: [

@@ -257,14 +257,6 @@ function result() {
     bars.appendChild(row);
     requestAnimationFrame(() => requestAnimationFrame(() => { row.querySelector(".val").style.width = (v / scale * 100) + "%"; }));
   });
-  const m = r.magnitude;
-  $("#r-magnitude").textContent = "How hard you press: " + (m >= 0.8 ? "very hard. You don't do neutral." : m >= 0.6 ? "hard. You know what you think." : m >= 0.4 ? "evenly. You weigh things." : "lightly. You keep your options open.");
-  const tallest = AXES.slice().sort((x, y) => r.axes[y] - r.axes[x])[0];
-  if ((tallest === "R" || tallest === "V") && !["dawn", "dusk", "open", "omni"].includes(r.soul)) {
-    $("#r-magnitude").textContent += tallest === "R"
-      ? " Conviction runs strong in you, but conviction alone doesn't hold a soul; yours settles on its primal pull."
-      : " Hunger runs strong in you, but hunger alone doesn't hold a soul; yours settles on its primal pull.";
-  }
   (async () => { await typeInto($("#r-resonance"), RESONANCE[r.soul], 18); await typeInto($("#r-reading"), soul.reading, 18); })();
 }
 
