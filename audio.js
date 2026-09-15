@@ -96,7 +96,7 @@ const Ambient = (() => {
   }
 
   function start() {
-    if (running) return;
+    if (running) { if (ctx && ctx.state === "suspended") ctx.resume(); return; }
     running = true;
     if (MUSIC_FILE) {
       el = el || Object.assign(new Audio(MUSIC_FILE), { loop: true, volume: 0.35 });
@@ -127,7 +127,7 @@ const Ambient = (() => {
     if (!running) return;
     const c = ctx || blipCtx || (blipCtx = new (window.AudioContext || window.webkitAudioContext)());
     const now = c.currentTime;
-    if (now - lastBlip < 0.035) return;
+    if (now - lastBlip < 0.045) return;
     lastBlip = now;
     const o = c.createOscillator(); o.type = "square";
     o.frequency.setValueAtTime(420 + Math.random() * 60, now);
@@ -138,5 +138,19 @@ const Ambient = (() => {
     o.connect(g); g.connect(c.destination); o.start(now); o.stop(now + 0.07);
   }
 
-  return { start, stop, blip, isRunning: () => running };
+  /* Two-note chime when a choice is made. */
+  function chime() {
+    if (!running) return;
+    const c = ctx || blipCtx || (blipCtx = new (window.AudioContext || window.webkitAudioContext)());
+    const now = c.currentTime;
+    [[660, 0], [990, 0.09]].forEach(([f, dt]) => {
+      const o = c.createOscillator(); o.type = "triangle"; o.frequency.value = f;
+      const g = c.createGain(); g.gain.setValueAtTime(0.0001, now + dt);
+      g.gain.exponentialRampToValueAtTime(0.07, now + dt + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + dt + 0.35);
+      o.connect(g); g.connect(c.destination); o.start(now + dt); o.stop(now + dt + 0.4);
+    });
+  }
+
+  return { start, stop, blip, chime, isRunning: () => running };
 })();

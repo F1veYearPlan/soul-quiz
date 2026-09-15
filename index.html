@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Soul Affinity Quiz</title>
-<meta name="description" content="Have your soul's resonance read by the Guild Registrar. Sixty-six questions. No right answers.">
+<meta name="description" content="Have your soul's resonance read before you wake in Vaeloria. Sixty-six questions. No right answers.">
 <meta property="og:title" content="Soul Affinity Quiz">
-<meta property="og:description" content="Have your soul's resonance read by the Guild Registrar. No right answers.">
+<meta property="og:description" content="Have your soul's resonance read before you wake in Vaeloria. No right answers.">
 <meta property="og:image" content="guild.png">
 <link rel="icon" href="guild.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <canvas id="embers" aria-hidden="true"></canvas>
@@ -28,26 +28,20 @@
 
 <main id="stage" class="stage" aria-live="polite">
 
-  <!-- Intro -->
-  <section id="s-intro" class="screen">
-    <div class="box dialog">
-      <p class="say" id="intro-text"></p>
+  <!-- Splash -->
+  <section id="s-splash" class="screen hidden">
+    <div class="box dialog splash-box">
+      <p class="say" id="splash-text"></p>
     </div>
-    <div class="box answers" id="intro-choices">
-      <button id="btn-begin" class="choice" type="button">Give your hand</button>
-      <button id="btn-whatis" class="choice" type="button">What's an Elemental Affinity?</button>
-      <button id="btn-howlong" class="choice" type="button">How long will this take?</button>
-    </div>
+    <div class="box answers" id="splash-choices"></div>
   </section>
 
-  <!-- Interlude (Registrar speaks between parts) -->
-  <section id="s-interlude" class="screen hidden">
-    <div class="box dialog">
-      <p class="say" id="interlude-text"></p>
+  <!-- Dialogue (intro tree and interludes) -->
+  <section id="s-talk" class="screen hidden">
+    <div class="box dialog talk-box" id="talk-box">
+      <div class="say" id="talk-text"></div>
     </div>
-    <div class="box actions">
-      <button id="btn-interlude" class="choice primary" type="button">Go on</button>
-    </div>
+    <div class="box answers" id="talk-choices"></div>
   </section>
 
   <!-- Question -->
@@ -61,13 +55,6 @@
     </div>
     <div class="box answers" id="answers"></div>
     <p class="hint keys">↑ ↓ or ← → move · 1–6 jump · Z or Enter confirm · X back</p>
-  </section>
-
-  <!-- Reading in progress -->
-  <section id="s-reading" class="screen hidden">
-    <div class="box dialog">
-      <p class="say" id="reading-text"></p>
-    </div>
   </section>
 
   <!-- Result -->
@@ -92,8 +79,8 @@
       <p class="magnitude" id="r-magnitude"></p>
     </div>
     <div class="box actions row">
-      <button id="btn-copy" class="choice" type="button">Copy result</button>
-      <button id="btn-again" class="choice" type="button">Be read again</button>
+      <button id="btn-copy" class="plain" type="button">Copy result</button>
+      <button id="btn-again" class="plain" type="button">Be read again</button>
     </div>
   </section>
 
@@ -101,12 +88,13 @@
 
 <footer class="foot">
   <span>The Adventurers Guild · Vaeloria</span>
+  <a class="discord" href="https://discord.gg/TZgBqacT7e" target="_blank" rel="noopener">Join the Discord</a>
 </footer>
 
-<script src="questions.js"></script>
-<script src="scoring.js"></script>
-<script src="souls.js"></script>
-<script src="audio.js"></script>
-<script src="app.js"></script>
+<script src="questions.js?v=5"></script>
+<script src="scoring.js?v=5"></script>
+<script src="souls.js?v=5"></script>
+<script src="audio.js?v=5"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

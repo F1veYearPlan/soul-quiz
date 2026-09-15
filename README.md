@@ -4,16 +4,13 @@ Static site. No build step. Open `index.html` or host the folder anywhere.
 
 ## Files
 - `index.html`, `style.css` — the page.
-- `questions.js` — the question bank and the Registrar's lines. Weights live here and are never shown.
+- `questions.js` — the question bank, the Sent's dialogue tree (`READER`), and the force colors. Weights are never shown.
+- Flow: splash ("Are you awake?") → five intro lines → choices → optional forces explanation → three quiz parts with interludes → result. Bump every `?v=N` in `index.html` when you change a file so browsers don't cache the old one.
 - `scoring.js` — scoring and the soul gates, straight from the Magick System page. `CONFIG` holds every knob.
 - `souls.js` — result readings for each soul (NEW text; edit freely).
 - `audio.js` — ambient music synthesized in the browser. Set `MUSIC_FILE` to use a track of your own instead.
-- `app.js` — screens, input, result, and ledger logging. Set `LEDGER_ENDPOINT` here.
-- `Code.gs` — the Google Sheets receiver.
+- `app.js` — screens, input, and the result screen.
 - `simulate.js` — `node simulate.js` checks bank balance, reachability of every soul, and a simulated population.
-
-## Ledger rows
-Each recorded run logs a `runId` (never shown to the user), the handle they typed, the soul, all six axis scores, magnitude, blood, raw answers, and time taken. Retests are matched by handle.
 
 ## Tuning blood weight
 `CONFIG.blood` in `scoring.js` starts at all zeros: nobody carries a nudge, everyone gets their true result. Once you have rows in the sheet:

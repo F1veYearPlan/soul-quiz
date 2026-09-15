@@ -424,28 +424,73 @@ const FEEL_FIRST = [
   },
 ];
 
-/* The Registrar's lines. Edit these to change the voice. */
+/* The speaker's lines: one of the Sent, unnamed, talking to you in a dream.
+ * Quiz flavor only; not canon for the game or world. Edit freely. */
+const FORCE_COLORS = { Fire: "#e0503a", Water: "#3f8fd2", Earth: "#a07a4a", Air: "#5fb37a", Void: "#8a5fc7", Radiant: "#f0d878" };
+
 const READER = {
   title: "Soul Affinity Quiz",
+  splash: "Hello...? Are you awake?",
+  splashYes: "Yes",
   intro: [
-    "You don't know your Elemental Affinity? Give me your palm, I'll read it for you.",
+    "I can see you've been met with a terrible fate.",
+    "The world you are about to wake up in is much different from your own...",
+    "It's dangerous, and for much of it you will be alone. You will need to be strong.",
+    "I have nothing I can offer you but this humble warning, for I am only a Soul, just like you.",
+    "Ah... there may be one thing I can do... this world, Vaeloria, is full of Magick. If you'll allow me, I can peer into your soul and impart the knowledge of your nature upon you.",
   ],
-  whatIs: "Knowing your Elemental Affinity tells us the nature of your Soul, the element whose nature most aligns with your own.",
-  howLong: "Ten minutes, give or take. Less if you don't overthink it.",
-  partOne: [
-    "First, I'll say something about you and you tell me how true it is, got it?",
+  introChoices: { yes: "Yes, please do.", nature: "What do you mean my \"nature\"?" },
+  nature: [
+    "Vaeloria is a world full of Magick.",
+    "It hangs in the air of that world like water hangs in the sea. The living breathe magick into their lungs and their bodies refine it into something that answers their will.",
+    "But a body only makes the power. It is the soul that spends it. To understand Magick, you must first feel the force you're trying to control, press your will into it, and let it go into the world.",
   ],
-  partTwo: [
-    "Good, I'm getting an idea of your true nature. Now you'll be presented with scenarios, to you they will feel very real. I want you to imagine how you would act in them.",
+  /* Blocks type all their lines at the same time. `name` is colored. */
+  primal: {
+    header: "Primal Forces are the elemental forces sewn into the fabric of reality as its building blocks; Everything is made from these elements, and all humans have an affinity for at least one of them.",
+    lines: [
+      { name: "Fire", text: "Fire feels exciting, it's thrilling, all-consuming, and wild. It begins things, but lacks staying power; flickering into existence to enact its influence before burning up. It is both the warmth of the hearth, and the flames that raze kingdoms." },
+      { name: "Water", text: "Water feels empathetic, engrossing, accepting, enduring, and immortal. It reflects what looks into it and gives way when opposed, enveloping, smothering, and drowning; Sometimes with kindness, sometimes with cruelty." },
+      { name: "Earth", text: "Earth feels steadfast, supportive, and unyielding. It carries the weight of tradition, feeding and nourishing, stubborn in its defense and slow to change. Earth resists influence, offering stability and embodying strength and confidence." },
+      { name: "Air", text: "Air feels restless, everchanging, clever, and analytical. It is freedom in motion, it can scatter or coalesce to form powerful storms. Rarely able to remain still but always adaptable to change, carefully observing, moving, and always analyzing." },
+    ],
+  },
+  moral: {
+    header: "Moral Forces require immense strength of will and clarity of desire to utilize, the mind must be strong as both risk corrupting their users with power that greatly exceeds that of the primal forces.",
+    lines: [
+      { name: "Void", text: "Void magick feels like hunger, allure, and temptation. Born from darkness, the void exists everywhere the light cannot reach. Void magick often involves a price for its use, risking madness in those who choose to wield it. It is the veil between freedom and restraint, fail to remain mentally strong and the void will consume you, feasting on your mind." },
+      { name: "Radiant", text: "Radiant magick feels like purpose, hope, and conviction. The Light embodies purity, illumination, and standing for ideals greater than the self; It provides guidance and clarity. When taken to extremes Light can burn with strict judgement or blinding justice, becoming strict and oppressive. Fail to remain mentally strong and the light will dominate your being." },
+    ],
+  },
+  natureEnd: [
+    "The Nature of your soul will tell us which element best suits you, the one you will learn the quickest. There are other forces of Magick, but souls of those natures are... not possible. Not for you.",
+    "That is all I can share. Shall I?",
   ],
-  partThree: [
-    "Got it. Just a few more questions.",
+  natureChoices: { yes: "Yes, go ahead.", other: "What about the other forces?" },
+  other: [
+    "Those forces are... different. They are the forces of the Universe, and not relevant to you... But I suppose I can tell you.",
   ],
-  reading: [
-    "There it is.",
-  ],
-}
+  meta: {
+    header: "The Meta Forces of magick are those that bend, distort, and reinterpret reality and how it behaves.",
+    lines: [
+      { name: "Spacetime/Cosmic", text: "Spacetime is the magick of infinity, timeless, formless, and strange. It bends space, halts or hastens time, and exists beyond mortal capability; Like wielding a tool you're not capable of understanding fully. It can glimpse truths not meant for minds bound to flesh, alien yet alluring, unknown, offering mastery over the weave of existence itself or intoxicating madness in the face of eternity. This domain is reality's framework itself, the stage on which primal and moral forces play out. Spacetime magick feels infinite, formless, where primal and moral forces are guiderails, cosmic forces define the rules of possibility. It is not inherently good or evil, but neutral, uncaring, and terrifying in scale." },
+      { name: "Mind", text: "If Cosmic is the external fabric of reality, mind is the internal. Mind magick consists of thought, will, memory, and perception. Projecting influence and will onto the world, rewriting how others perceive reality, or how reality itself behaves. Masters of Mind magick are said to be an affront to the Gods themselves, recrafting reality in their own image. It's said that those who utilize this school of magick can never pass on to the true afterlife, their souls are unmade in death, scattering their essence into nothingness - Some will go to great lengths to avoid this, despite it being hearsay. Cosmic defines the stage of existence, Mind defines the lens through which existence is interpreted. Together, they bind the subjective and the objective; Both of which can be manipulated. Mind magick allows you to bend and redefine reality itself, temporarily." },
+    ],
+  },
+  precreation: {
+    header: "Pre-Creation Magick is magick that creates, deletes, or defines existence itself; If The Meta Forces alter how reality behaves, Pre-Creation Magick alters what reality even is.",
+    lines: [
+      { name: "Living Magick", text: "Living magick is pre-creation magick, wielded and understood only by omniscient, godlike beings. It is the raw, animating force of reality and life itself, the power that gives beings life, will, identity, and persistence in reality. The mortal plane itself cannot sustain unbound living magick, it would rampantly destroy or rewrite things before fizzling out as it requires magickal density only capable on the Celestial Plane." },
+      { name: "Null Magick (Mu)", text: "Mu is not a force, but the absence that all forces are written into. It does not burn, drown, or scatter, it unmakes. Where fire transforms and the void consumes, Mu subtracts. Whatever it touches is simply unmade. Null Magick feels like something beyond silence, emptiness that cannot be described. It is impossible to cast or call upon Null Magick, for it cannot be imprinted on. The user would have to invert a refined Ichor into a Hollow Ichor, inverting will upon itself, overwriting and releasing it. Hollow Ichor and Aether annihilate on contact, like matter and antimatter. It is impossible to enter a state of resonance, as no matter aligns with its own deletion. It's likely that this annihilates the Catalyst Cells used to create it. To conjure Mu, one must feel emptiness; A grief that has finished grieving, the sincere will that something end. Relinquishing possession, desire, punishment, replacement. Any flicker of emotion or wanting contaminates the inversion. Most mortal minds cannot structurally hold a genuine desire for nothing." },
+    ],
+  },
+  otherEnd: ["That is all I can share. Shall I?"],
+  partOne: ["First, I'll say something about you and you tell me how true it is, got it?"],
+  partTwo: ["Good, I'm getting an idea of your true nature. Now you'll be presented with scenarios, to you they will feel very real. I want you to imagine how you would act in them."],
+  partThree: ["Got it. Just a few more questions."],
+  reading: ["There it is."],
+};
 
 if (typeof module !== "undefined") {
-  module.exports = { BASELINE, SCENARIOS, FEEL_FIRST, READER };
+  module.exports = { BASELINE, SCENARIOS, FEEL_FIRST, READER, FORCE_COLORS };
 }
