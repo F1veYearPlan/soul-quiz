@@ -80,7 +80,7 @@ div.say > .line:first-child::before { content: "✦ "; color: var(--gold); }
 .answers:empty { display: none; }
 .line { margin: 0 0 0.55em; white-space: pre-wrap; }
 .line:last-child { margin-bottom: 0; }
-.line.force { padding-left: 1.2em; }
+.line.force { padding-left: 0; }
 .force-name { font-weight: bold; }
 .talk-box { max-height: 70vh; overflow-y: auto; }
 .splash-box { min-height: 100px; }
@@ -145,7 +145,8 @@ input[type="text"] {
 input[type="text"]:focus { outline: none; border-color: var(--gold); }
 
 /* Result */
-.result-head { display: flex; flex-direction: column; gap: 16px; }
+.resonance { margin: 0 0 4px; }
+.result-head { display: flex; gap: 22px; align-items: center; }
 .result-row { display: flex; gap: 22px; align-items: center; }
 .glyph { font-size: 64px; line-height: 1; width: 90px; height: 90px; display: grid; place-items: center; border: 3px solid var(--gold-dim); background: var(--navy-deep); }
 .eyebrow { margin: 0; color: var(--muted); font-size: 20px; }

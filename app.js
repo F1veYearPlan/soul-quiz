@@ -62,7 +62,7 @@ async function sayBlock(el, block) {
   await pause(400);
   const jobs = block.lines.map(l => {
     const p = document.createElement("p"); p.className = "line force";
-    const name = document.createElement("span"); name.className = "force-name"; name.textContent = l.name + ": ";
+    const name = document.createElement("span"); name.className = "force-name"; name.textContent = l.name + " ";
     const short = l.name.split(/[ /(]/)[0];
     name.style.color = FORCE_COLORS[short] || FORCE_COLORS[l.name] || "var(--gold)";
     const body = document.createElement("span");
@@ -147,6 +147,7 @@ async function moral() {
 async function meta() {
   talkClear();
   await sayBlock(talkText, READER.meta);
+  await sayLines(talkText, READER.metaEnd, 24);
   renderChoices(talkChoices, [READER.metaChoice], () => precreation());
 }
 async function precreation() {
